@@ -11,6 +11,8 @@ import (
 
 const ListenAddress = "0.0.0.0:4221"
 
+var directoryFlag = flag.String("directory", "", "a string")
+
 func main() {
 	flag.Parse()
 
@@ -64,9 +66,8 @@ func handleConnection(conn net.Conn) {
 		responseWithContent(conn, userAgent, "text/plain")
 	} else if strings.HasPrefix(path[1], "/files") {
 		fileName := path[1][7:]
-		var directoryFlagPtr = flag.String("directory", "", "a string")
 
-		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlagPtr, fileName))
+		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName))
 		if err != nil {
 			response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 			conn.Write(response)
