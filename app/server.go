@@ -73,7 +73,7 @@ func handleConnection(conn net.Conn) {
 			buf := bytes.Buffer{}
 			buf.Write(fileContent)
 
-			err := os.WriteFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName), []byte("hello"), 0664)
+			err := os.WriteFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName), buf.Bytes(), 0664)
 			if err != nil {
 				fmt.Println(err)
 				return
