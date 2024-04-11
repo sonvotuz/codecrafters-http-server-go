@@ -65,6 +65,7 @@ func handleConnection(conn net.Conn) {
 	} else if strings.HasPrefix(path[1], "/files") {
 		fileName := path[1][7:]
 		var directoryFlagPtr = flag.String("directory", "", "define directory")
+		var directoryFlagPtr = flag.String("directory", "", "a string")
 
 		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlagPtr, fileName))
 		if err != nil {
@@ -85,7 +86,7 @@ func responseWithContent(conn net.Conn, data, contentType string) {
 	buf.WriteString("HTTP/1.1 200 OK\r\n")
 	buf.WriteString(fmt.Sprintf("Content-Type: %s\r\n", contentType))
 	buf.WriteString(fmt.Sprintf("Content-Length: %d\r\n\r\n", len(data)))
-	buf.WriteString(data)
+	buf.WriteString(fmt.Sprintf("%s", data))
 
 	conn.Write(buf.Bytes())
 }
