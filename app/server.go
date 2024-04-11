@@ -83,7 +83,6 @@ func handleConnection(conn net.Conn) {
 func responseWithContent(conn net.Conn, data, contentType string) {
 	buf := bytes.Buffer{}
 	buf.WriteString("HTTP/1.1 200 OK\r\n")
-	buf.WriteString("Content-Type: text/plain\r\n")
 	buf.WriteString(fmt.Sprintf("Content-Type: %s\r\n", contentType))
 	buf.WriteString(fmt.Sprintf("Content-Length: %d\r\n\r\n", len(data)))
 	buf.WriteString(data)
