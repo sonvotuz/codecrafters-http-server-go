@@ -64,7 +64,6 @@ func handleConnection(conn net.Conn) {
 		responseWithContent(conn, userAgent, "text/plain")
 	} else if strings.HasPrefix(path[1], "/files") {
 		fileName := path[1][7:]
-		var directoryFlagPtr = flag.String("directory", "", "define directory")
 		var directoryFlagPtr = flag.String("directory", "", "a string")
 
 		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlagPtr, fileName))
