@@ -60,7 +60,7 @@ func handleConnection(conn net.Conn) {
 		userAgent := strings.Split(data[2], " ")[1]
 
 		responseWithContent(conn, userAgent, "text/plain")
-	} else if strings.HasPrefix(path[1], "/files") && len(path[1][7:]) > 0 {
+	} else if strings.HasPrefix(path[1], "/files") {
 		fileName := path[1][7:]
 		var directoryFlagPtr = flag.String("directory", "", "define directory")
 
