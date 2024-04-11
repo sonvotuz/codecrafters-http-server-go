@@ -66,15 +66,30 @@ func handleConnection(conn net.Conn) {
 		responseWithContent(conn, userAgent, "text/plain")
 	} else if strings.HasPrefix(path[1], "/files") {
 		fileName := path[1][7:]
+		httpMethod := path[0]
 
-		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName))
-		if err != nil {
-			response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
+		if httpMethod == "POST" {
+			fileContent := []byte(data[len(data)-1])
+			buf := bytes.Buffer{}
+			buf.Write(fileContent)
+
+			err := os.WriteFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName), []byte("hello"), 0664)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			response := []byte("HTTP/1.1 201 Created\r\n\r\n")
 			conn.Write(response)
-			return
+		} else {
+			dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName))
+			if err != nil {
+				response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
+				conn.Write(response)
+				return
+			}
+			data := string(dataBytes)
+			responseWithContent(conn, data, "application/octet-stream")
 		}
-		data := string(dataBytes)
-		responseWithContent(conn, data, "application/octet-stream")
 	} else {
 		response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 		conn.Write(response)
@@ -87,8 +102,6 @@ func responseWithContent(conn net.Conn, data, contentType string) {
 	buf.WriteString(fmt.Sprintf("Content-Type: %s\r\n", contentType))
 	buf.WriteString(fmt.Sprintf("Content-Length: %d\r\n\r\n", len(data)))
 	buf.WriteString(fmt.Sprintf("%s", data))
-
-	fmt.Println("Running here")
 
 	conn.Write(buf.Bytes())
 }
