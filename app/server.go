@@ -21,5 +21,9 @@ func main() {
 
 	defer conn.Close()
 
-	fmt.Fprintf(conn, "HTTP/1.1 200 OK\r\n\r\n")
+	_, err = fmt.Fprintf(conn, "HTTP/1.1 200 OK\r\n\r\n")
+	if err != nil {
+		fmt.Println("Error writing response:", err.Error())
+		os.Exit(1)
+	}
 }
