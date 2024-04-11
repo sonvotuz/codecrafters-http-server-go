@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"net"
 	"os"
-	"strconv"
 	"strings"
 )
 
@@ -70,19 +69,9 @@ func handleConnection(conn net.Conn) {
 		httpMethod := path[0]
 
 		if httpMethod == "POST" {
-			contentLength, err := strconv.Atoi(strings.Split(data[4], " ")[1])
-			if err != nil {
-				fmt.Println(err)
-				return
-			}
-			fileContent := []byte(data[len(data)-1])
+			fileContent := strings.TrimRight(data[len(data)-1], "\x00")
 
-			buf := bytes.Buffer{}
-			for i := 0; i < contentLength; i++ {
-				buf.WriteByte(fileContent[i])
-			}
-
-			err = os.WriteFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName), buf.Bytes(), 0664)
+			err = os.WriteFile(fmt.Sprintf("%s/%s", *directoryFlag, fileName), []byte(fileContent), 0664)
 			if err != nil {
 				fmt.Println(err)
 				return
