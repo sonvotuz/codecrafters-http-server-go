@@ -62,20 +62,15 @@ func handleConnection(conn net.Conn) {
 		responseWithContent(conn, userAgent, "text/plain")
 	} else if strings.HasPrefix(path[1], "/files") && len(path[1][7:]) > 0 {
 		fileName := path[1][7:]
-		if _, err := os.Stat(fileName); err != nil {
+		var directoryFlagPtr = flag.String("directory", "", "define directory")
+
+		dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlagPtr, fileName))
+		if err != nil {
 			response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 			conn.Write(response)
-		} else {
-			var directoryFlagPtr = flag.String("directory", "", "define directory")
-
-			dataBytes, err := os.ReadFile(fmt.Sprintf("%s/%s", *directoryFlagPtr, fileName))
-			if err != nil {
-				response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
-				conn.Write(response)
-			}
-			data := string(dataBytes)
-			responseWithContent(conn, data, "application/octet-stream")
 		}
+		data := string(dataBytes)
+		responseWithContent(conn, data, "application/octet-stream")
 	} else {
 		response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 		conn.Write(response)
