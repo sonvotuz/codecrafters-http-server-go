@@ -87,5 +87,7 @@ func responseWithContent(conn net.Conn, data, contentType string) {
 	buf.WriteString(fmt.Sprintf("Content-Length: %d\r\n\r\n", len(data)))
 	buf.WriteString(fmt.Sprintf("%s", data))
 
+	fmt.Println("Running here")
+
 	conn.Write(buf.Bytes())
 }
