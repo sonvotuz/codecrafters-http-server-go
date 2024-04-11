@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 	"net"
 	"os"
@@ -44,11 +45,26 @@ func handleConnection(conn net.Conn) {
 
 	data := strings.Split(string(req), "\r\n")
 	path := strings.Split(data[0], " ")
+
 	if path[1] == "/" {
 		response := []byte("HTTP/1.1 200 OK\r\n\r\n")
 		conn.Write(response)
+	} else if strings.HasPrefix(path[1], "/echo") {
+		randomStr := path[1][6:]
+
+		responseWithContent(conn, randomStr)
 	} else {
 		response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 		conn.Write(response)
 	}
+}
+
+func responseWithContent(conn net.Conn, data string) {
+	buf := bytes.Buffer{}
+	buf.WriteString("HTTP/1.1 200 OK\r\n")
+	buf.WriteString("Content-Type: text/plain\r\n")
+	buf.WriteString(fmt.Sprintf("Content-Length: %d\r\n\r\n", len(data)))
+	buf.WriteString(data)
+
+	conn.Write(buf.Bytes())
 }
