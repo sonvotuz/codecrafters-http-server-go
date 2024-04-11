@@ -68,6 +68,7 @@ func handleConnection(conn net.Conn) {
 		if err != nil {
 			response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 			conn.Write(response)
+			return
 		}
 		data := string(dataBytes)
 		responseWithContent(conn, data, "application/octet-stream")
