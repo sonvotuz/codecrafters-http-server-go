@@ -12,6 +12,8 @@ import (
 const ListenAddress = "0.0.0.0:4221"
 
 func main() {
+	flag.Parse()
+
 	listener, err := net.Listen("tcp", ListenAddress)
 	if err != nil {
 		fmt.Println("Failed to bind to port 4221")
