@@ -8,8 +8,10 @@ import (
 	"strings"
 )
 
+const ListenAddress = "0.0.0.0:4221"
+
 func main() {
-	listener, err := net.Listen("tcp", "0.0.0.0:4221")
+	listener, err := net.Listen("tcp", ListenAddress)
 	if err != nil {
 		fmt.Println("Failed to bind to port 4221")
 		os.Exit(1)
