@@ -53,6 +53,10 @@ func handleConnection(conn net.Conn) {
 		randomStr := path[1][6:]
 
 		responseWithContent(conn, randomStr)
+	} else if strings.HasPrefix(path[1], "/user-agent") {
+		userAgent := strings.Split(data[2], " ")[1]
+
+		responseWithContent(conn, userAgent)
 	} else {
 		response := []byte("HTTP/1.1 404 Not Found\r\n\r\n")
 		conn.Write(response)
